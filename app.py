@@ -9,7 +9,15 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("APP_SECRET_KEY" ,"inventory-secret-key")
-DB = os.environ.get("DB_PATH" , "database.db")
+# 1. Environment se path uthao
+DB_PATH = os.environ.get("DB_PATH", "database.db")
+
+# 2. Folder create karo (agar zaroorat ho)
+if os.path.dirname(DB_PATH):
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+
+# 3. Connection ke liye variable set karo
+DB = DB_PATH
 
 # ---------------- USERS (TEMP) ----------------
 USERS = {
