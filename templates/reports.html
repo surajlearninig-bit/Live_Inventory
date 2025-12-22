@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reports | IT Asset Inventory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f1f5f9;display:flex;font-family:Inter,sans-serif}
+.sidebar{width:200px;background:#020617;color:#fff;height:100vh;padding:16px}
+.nav-item{padding:10px;border-radius:6px;cursor:pointer;font-size:13px;margin-bottom:6px}
+.nav-item:hover{background:#1e293b}
+.main{flex:1;padding:20px}
+.card{border-radius:12px}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>Inventory</h2>
+
+  <div class="nav-item" onclick="location.href='/'">Dashboard</div>
+  <div class="nav-item" onclick="location.href='/inventory'">Live Inventory</div>
+  <div class="nav-item" onclick="location.href='/assets'">Assets</div>
+  <div class="nav-item" onclick="location.href='/users'">Users</div>
+  <div class="nav-item" onclick="location.href='/reports'">Reports</div>
+
+  {% if role == "admin" %}
+  <div class="nav-item" onclick="location.href='/settings'">
+    Settings
+  </div>
+  {% endif %}
+</div>
+
+
+<!-- MAIN -->
+<div class="main">
+
+<h5 class="mb-3">Download Reports</h5>
+
+<div class="card shadow-sm p-3 mb-3">
+  <div class="row g-3">
+
+    <!-- DATA SOURCE -->
+    <div class="col-md-4">
+      <label class="form-label">Data Source</label>
+      <select class="form-select" id="dataSource">
+        <option value="inventory">Live Inventory</option>
+        <option value="users">Users</option>
+      </select>
+    </div>
+
+    <!-- FORMAT -->
+    <div class="col-md-4">
+      <label class="form-label">Download Format</label>
+      <select class="form-select" id="format">
+        <option value="csv">CSV</option>
+        <option value="xlsx">EXCEL</option>
+        <option value="pdf">PDF</option>
+      </select>
+    </div>
+
+  </div>
+</div>
+
+<!-- FIELDS -->
+<div class="card shadow-sm p-3 mb-3">
+  <h6>Select Fields</h6>
+  <div id="fieldList" class="row small"></div>
+</div>
+
+<button class="btn btn-primary" onclick="downloadReport()">
+  Download Report
+</button>
+
+</div>
+
+<script src="/static/reports.js"></script>
+</body>
+</html>
