@@ -1,0 +1,23 @@
+name: Deploy Inventory App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create .env file from Secrets
+        run: |
+          echo "APP_SECRET_KEY=${{ secrets.APP_SECRET_KEY }}" > .env
+          echo "DB_PATH=${{ secrets.DB_PATH }}" >> .env
+
+      - name: Deploy with Docker Compose
+        run: |
+          docker-compose down
+          docker-compose up -d --build
