@@ -21,9 +21,14 @@ DB = DB_PATH
 
 # ---------------- USERS (TEMP) ----------------
 USERS = {
-    "admin": {"password": "admin123", "role": "admin"},
-    "viewer": {"password": "viewer123", "role": "viewer"},
-    "suraj": {"password": "suraj123", "role": "viewer"}
+    "admin": {
+        "password": os.environ.get("ADMIN_PASSWORD", "admin123"), 
+        "role": "admin"
+    },
+    "suraj": {
+        "password": os.environ.get("SURAJ_PASSWORD", "suraj123"), 
+        "role": "viewer"
+    }
 }
 
 def db():
