@@ -22,11 +22,11 @@ DB = DB_PATH
 # ---------------- USERS (TEMP) ----------------
 USERS = {
     "admin": {
-        "password": os.environ.get("ADMIN_PASSWORD", "admin123"), 
+        "password": os.environ.get("ADMIN_PASSWORD"), 
         "role": "admin"
     },
     "suraj": {
-        "password": os.environ.get("SURAJ_PASSWORD", "suraj123"), 
+        "password": os.environ.get("SURAJ_PASSWORD"), 
         "role": "viewer"
     }
 }
