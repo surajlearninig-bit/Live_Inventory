@@ -392,19 +392,28 @@ def update_role():
 # ================= AGENT =================
 @app.route("/agent/update", methods=["POST"])
 def agent_update():
-    payload=request.json or {}
-    host=payload.get("host_name","UNKNOWN")
+    try:
+        payload = request.get_json(force=True) # Force JSON parsing
+        if not payload:
+            return jsonify({"error": "No data"}), 400
+            
+        host = payload.get("host_name", "UNKNOWN")
 
-    con=db()
-    cur=con.cursor()
-    cur.execute("DELETE FROM live_inventory WHERE host_name=?", (host,))
-    cur.execute("""
-    INSERT INTO live_inventory(host_name,last_seen,data)
-    VALUES (?,?,?)
-    """,(host, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), json.dumps(payload)))
-    con.commit()
-    con.close()
-    return jsonify({"status":"updated"})
+        con = db()
+        cur = con.cursor()
+        # Pehle purana data saaf karo
+        cur.execute("DELETE FROM live_inventory WHERE host_name=?", (host,))
+        # Naya data insert karo
+        cur.execute("""
+            INSERT INTO live_inventory(host_name, last_seen, data)
+            VALUES (?,?,?)
+        """, (host, datetime.now().strftime("%Y-%m-%d %H:%M:%S"), json.dumps(payload)))
+        con.commit()
+        con.close()
+        return jsonify({"status": "updated"}), 200
+    except Exception as e:
+        print(f"Agent Update Error: {e}") # Ye error logs mein dikhega
+        return jsonify({"error": str(e)}), 500
 
 # ================= RUN =================
 if __name__=="__main__":
