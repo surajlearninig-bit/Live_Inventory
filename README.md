@@ -1,149 +1,93 @@
-# Live Inventory – DevOps CI/CD Automation Project
+🚀 Automated Inventory Management System with CI/CD
+This is a robust, end-to-end Automated Inventory Management System designed to collect system data from remote agents. This project demonstrates modern DevOps practices, including Containerization, CI/CD pipelines, and Automated Database Backups.
 
-**Live Inventory** is a production-ready, containerized web application with **end-to-end DevOps automation**.  
-The project demonstrates **real-world CI/CD pipelines using Jenkins and GitHub Actions**, automated Docker deployments, and **email alerting for pipeline status**.
+🛠 Tech Stack
+Backend: Flask (Python)
 
----
+Database: SQLite3
 
-## 🚀 Project Overview
+DevOps Tools: Docker, Docker Compose, Jenkins
 
-Live Inventory is a web-based inventory management system that supports real-time item tracking.  
-The application is fully automated with CI/CD pipelines to ensure **fast, reliable, and zero-manual deployments**.
+Scripting: Bash (Shell Scripting)
 
----
+Monitoring/Alerting: Gmail SMTP for Build Notifications
 
-## 🧠 DevOps Highlights
+🏗 Key Features
+1. Dockerization & Data Persistence
+The entire application is containerized using Docker for environment consistency.
 
-- ✅ CI/CD using **Jenkins**
-- ✅ CI/CD using **GitHub Actions**
-- 🐳 Dockerized application
-- 🔁 Automated deployment on code push
-- 📧 Email alerts on build & deployment status
-- ⚙️ Environment-based configuration
-- 🚀 Zero manual intervention
+Data Persistence: Implemented Docker Volumes to ensure the SQLite database remains intact even after Jenkins re-builds or container restarts.
 
----
+2. CI/CD Pipeline (Jenkins)
+Configured a Jenkins pipeline to automate the build and deployment process.
 
-## 🛠 Tech Stack
+Email Notifications: Integrated Gmail SMTP to send automated alerts regarding build status (Success/Failure) to the administrator.
 
-| Layer | Technology |
-|------|-----------|
-| Backend | Python (Flask) |
-| Frontend | HTML, CSS, JavaScript |
-| Containerization | Docker, Docker Compose |
-| CI/CD | Jenkins, GitHub Actions |
-| Notifications | Email Alerts |
-| Version Control | GitHub |
+3. Automated Backup System 📂
+I developed a custom Bash Script to ensure data safety and high availability:
 
----
+Scheduled Backups: A Cron job triggers a .dump of the database daily at 3:00 PM.
 
-## ⚙️ CI/CD Architecture
+Log Management: Every backup activity is logged at /var/log/inventory_backup.log for auditing.
 
-Developer Push Code
-↓
-GitHub Repository
-↓
-┌───────────────┐
-│ GitHub Actions│
-│ (CI Pipeline) │
-└───────────────┘
-↓
-Docker Build
-↓
-Jenkins Pipeline
-↓
-Automated Deployment
-↓
-Email Notification
-
-
-## 🧩 Jenkins Pipeline Responsibilities
-
-- Pull latest code from GitHub
-- Build Docker image
-- Run application container
-- Deploy updated version
-- Send **email alerts** on:
-  - ✅ Build success
-  - ❌ Build failure
-  - 🚀 Deployment status
-
-✔ Real-time feedback  
-✔ Faster issue detection  
-
----
-
-## 📧 Email Alerting
-
-Email notifications are configured in Jenkins to notify stakeholders about pipeline status.
-
-### Alerts Triggered On:
-- Build Success
-- Build Failure
-- Deployment Completion
-
-This ensures:
-- 📢 Immediate visibility
-- 🔍 Faster troubleshooting
-- 📊 Production reliability
-
----
-
-## 🐳 Dockerized Application
-
-### Run Locally Using Docker
-
-git clone https://github.com/surajlearninig-bit/Live_Inventory.git
-cd Live_Inventory
-docker compose up --build
+Auto-Retention: To optimize storage, the script automatically deletes backups older than 7 days.
 
 📂 Project Structure
+Plaintext
 
-Live_Inventory/
-├── app.py                    # Flask application
-├── Dockerfile                # Docker image
-├── docker-compose.yml        # Container orchestration
-├── requirements.txt          # Python dependencies
-├── static/                   # Frontend assets
-├── templates/                # HTML templates
-└── .github/workflows/        # GitHub Actions CI
+.
+├── main.py              # Core Flask Application logic
+├── docker-compose.yml   # Docker services orchestration
+├── Dockerfile           # Container build instructions
+├── .env                 # Environment variables & Secrets
+├── backup_script.sh     # Bash script for database automation
+└── data/                # Persistent Volume for SQLite DB
+⚠️ Challenges & Troubleshooting (My Learnings)
+In a real-world DevOps environment, I encountered and resolved several critical issues:
 
-🔐 Environment Variables
+Challenge: Data Loss During Deployment
 
-FLASK_APP=app.py
-FLASK_ENV=production
-DATABASE_URL=
+Issue: Every time Jenkins deployed a new build, the container was replaced, and the SQLite data was wiped out.
 
-🚀 Deployment Strategy
+Solution: Implemented Docker Bind Mounts (./data:/app/data) to map the database file to the Host VM's storage.
 
-GitHub Actions handles CI (build & validation)
-Jenkins handles CD (deployment & monitoring)
-Email alerts ensure deployment transparency
+Challenge: Agent Connection Errors (Status 500)
 
-✔ Reliable
-✔ Scalable
-✔ Production-ready
+Issue: The Agent failed to update data because the database tables did not exist on a fresh setup.
+
+Solution: Developed a Self-Healing logic within main.py using an init_db() function that automatically checks and creates missing tables on startup.
+
+Challenge: Linux File Permissions
+
+Issue: The Docker container was unable to write to the host directory.
+
+Solution: Used Linux permission management (chmod -R 777 ./data) to grant the necessary read/write access to the Docker engine.
+
+Challenge: SMTP Authentication on Localhost
+
+Issue: Gmail blocked the automated build alerts from the local Jenkins instance.
+
+Solution: Configured Gmail App Passwords and updated Linux Firewall (UFW) rules to allow traffic on Port 587.
+
+🚀 How to Run
+Clone the repository.
+
+Configure your credentials in the .env file.
+
+Launch the application:
+
+Bash
+
+docker-compose up -d --build
+Schedule the backup script via Crontab:
+
+Bash
+
+crontab -e
+# Add this line:
+0 15 * * * /path/to/backup_script.sh
 
 
-🔮 Future Enhancements
 
--☁️ Cloud deployment (AWS / Azure)
--🗄 PostgreSQL / MySQL integration
--📊 Monitoring (Prometheus + Grafana)
--🔐 Secrets management (Vault)
--🔁 Blue-Green / Rolling deployments
--👨‍💻 DevOps Engineer Notes
-
-This project demonstrates:
-
-Real Jenkins pipeline implementation
-CI/CD integration with GitHub
-Docker-based deployment automation
-Monitoring via email notifications
-Industry-standard DevOps workflow
-
-👤 Author
-
-Suraj
-DevOps Engineer
-GitHub: https://github.com/surajlearninig-bit
+👨‍💻 Developed By: Suraj Singh Tomar
+This project allowed me to gain deep insights into Docker networking, Jenkins automation, and Linux server administration.
