@@ -408,4 +408,13 @@ def agent_update():
 
 # ================= RUN =================
 if __name__=="__main__":
+
+    try:
+        print("Initializing database...")
+        init_db() 
+        print("Database is ready.")
+    except Exception as e:
+        print(f"Error initializing DB: {e}")
+        
     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+
